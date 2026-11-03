@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Session Feedback</title>
+<meta name="robots" content="noindex">
+<style>
+  :root{
+    --bg:#faf5ec; --card:#fffdf8; --ink:#2b2118; --muted:#7a6a5a;
+    --accent:#b4471f; --accent-dark:#8f3715; --line:#e6dccb; --focus:#e9a23b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#1d1712; --card:#271f18; --ink:#f3e9d9; --muted:#b5a48f; --line:#3d3226; --accent:#e07a4f; --accent-dark:#c9643a; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 Georgia,"Times New Roman",serif;}
+  main{max-width:640px;margin:0 auto;padding:32px 16px 64px}
+  .kicker{font:600 12px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+  h1{font-size:34px;line-height:1.15;margin:0 0 12px;font-weight:600}
+  .lede{color:var(--muted);margin:0 0 28px}
+  form,.thanks{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 20px}
+  fieldset{border:0;padding:0;margin:0 0 26px}
+  legend,label.q{display:block;font-weight:600;margin-bottom:8px;padding:0}
+  .hint{font:14px/1.4 system-ui,sans-serif;color:var(--muted);margin:-4px 0 10px}
+  .scale{display:flex;gap:8px}
+  .scale input{position:absolute;opacity:0;pointer-events:none}
+  .scale label{flex:1;text-align:center;padding:12px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;font:600 16px system-ui,sans-serif;background:var(--bg)}
+  .scale input:checked + label{background:var(--accent);border-color:var(--accent);color:#fff}
+  .scale input:focus-visible + label{outline:3px solid var(--focus);outline-offset:2px}
+  .ends{display:flex;justify-content:space-between;font:13px system-ui,sans-serif;color:var(--muted);margin-top:6px}
+  textarea,input[type=text],input[type=email],select{width:100%;font:16px/1.4 system-ui,sans-serif;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px}
+  textarea{min-height:100px;resize:vertical}
+  textarea:focus,input:focus,select:focus{outline:3px solid var(--focus);outline-offset:1px}
+  .check{display:flex;gap:10px;align-items:flex-start;font:15px/1.4 system-ui,sans-serif;margin-bottom:12px}
+  .check input{margin-top:3px;width:18px;height:18px;accent-color:var(--accent)}
+  button{width:100%;background:var(--accent);color:#fff;border:0;border-radius:10px;padding:15px;font:600 17px system-ui,sans-serif;cursor:pointer}
+  button:hover{background:var(--accent-dark)}
+  button:disabled{opacity:.6;cursor:wait}
+  .hp{position:absolute;left:-9999px}
+  .err{color:#b3261e;font:14px system-ui,sans-serif;margin-top:10px;display:none}
+  .thanks{display:none;text-align:center}
+  .thanks h2{margin:0 0 8px;font-size:26px}
+  footer{text-align:center;font:13px system-ui,sans-serif;color:var(--muted);margin-top:24px}
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker" id="kicker">Session feedback</p>
+  <h1 id="title">How did it land?</h1>
+  <p class="lede">Two minutes, honest answers welcome. What you tell me shapes the next room I walk into.</p>
+
+  <form id="f" novalidate>
+    <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend>Overall, how was the session?</legend>
+      <div class="scale" role="radiogroup">
+        <input type="radio" name="overall" id="o1" value="1"><label for="o1">1</label>
+        <input type="radio" name="overall" id="o2" value="2"><label for="o2">2</label>
+        <input type="radio" name="overall" id="o3" value="3"><label for="o3">3</label>
+        <input type="radio" name="overall" id="o4" value="4"><label for="o4">4</label>
+        <input type="radio" name="overall" id="o5" value="5"><label for="o5">5</label>
+      </div>
+      <div class="ends"><span>Not for me</span><span>Loved it</span></div>
+    </fieldset>
+
+    <fieldset>
+      <legend>How confident do you feel using AI in your work now?</legend>
+      <div class="scale" role="radiogroup">
+        <input type="radio" name="confidence" id="c1" value="1"><label for="c1">1</label>
+        <input type="radio" name="confidence" id="c2" value="2"><label for="c2">2</label>
+        <input type="radio" name="confidence" id="c3" value="3"><label for="c3">3</label>
+        <input type="radio" name="confidence" id="c4" value="4"><label for="c4">4</label>
+        <input type="radio" name="confidence" id="c5" value="5"><label for="c5">5</label>
+      </div>
+      <div class="ends"><span>Still unsure</span><span>Ready to build</span></div>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="pace">The pace was...</label>
+      <select id="pace" name="pace">
+        <option value="">Choose one</option>
+        <option>Too slow</option>
+        <option>A little slow</option>
+        <option>Just right</option>
+        <option>A little fast</option>
+        <option>Too fast</option>
+      </select>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="best">What was the most useful moment or idea?</label>
+      <textarea id="best" name="most_useful"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="better">What would you change or add?</label>
+      <textarea id="better" name="improve"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="next">What would you like to learn next?</label>
+      <p class="hint">Optional. A topic, a tool, a problem you are stuck on.</p>
+      <textarea id="next" name="next_topic" style="min-height:70px"></textarea>
+    </fieldset>
+
+    <fieldset>
+      <label class="q" for="name">Name and email</label>
+      <p class="hint">Optional. Only if you are happy for me to follow up.</p>
+      <input type="text" id="name" name="name" placeholder="Name" autocomplete="name" style="margin-bottom:10px">
+      <input type="email" id="email" name="email" placeholder="Email" autocomplete="email">
+    </fieldset>
+
+    <div class="check">
+      <input type="checkbox" id="quote" name="ok_to_quote" value="yes">
+      <label for="quote">You may quote my comments (first name only) in future materials.</label>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="follow" name="follow_up" value="yes">
+      <label for="follow">I would like to hear about future sessions and working together.</label>
+    </div>
+
+    <button type="submit" id="send">Send feedback</button>
+    <div class="err" id="err" role="alert"></div>
+  </form>
+
+  <div class="thanks" id="thanks" role="status">
+    <h2>Thank you.</h2>
+    <p>Every word gets read. If you asked for a follow-up, you will hear from me soon.</p>
+  </div>
+
+  <footer>Your answers go only to the session host.</footer>
+</main>
+
+<script>
+/* ---------- EDIT THESE ---------- */
+const CONFIG = {
+  sessionName: "TransformHer",          // shown in the header
+  sessionDate: "30 October 2026",
+  // Formspree (or similar) endpoint, e.g. "https://formspree.io/f/abcdwxyz"
+  // Leave empty to fall back to an email draft instead.
+  endpoint: "https://formspree.io/f/mwllwjlz",
+  fallbackEmail: ""                     // used only if endpoint is empty
+};
+/* -------------------------------- */
+
+document.getElementById("kicker").textContent = CONFIG.sessionName + " \u00B7 " + CONFIG.sessionDate;
+document.title = CONFIG.sessionName + " feedback";
+
+const form = document.getElementById("f");
+const err = document.getElementById("err");
+const btn = document.getElementById("send");
+
+function showErr(msg){ err.textContent = msg; err.style.display = "block"; }
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  err.style.display = "none";
+  const data = Object.fromEntries(new FormData(form).entries());
+  if (data.website) return; // honeypot
+  delete data.website;
+  if (!data.overall) { showErr("Please give an overall rating."); return; }
+  data.session = CONFIG.sessionName + " " + CONFIG.sessionDate;
+  data.submitted_at = new Date().toISOString();
+
+  btn.disabled = true; btn.textContent = "Sending...";
+  try {
+    if (CONFIG.endpoint) {
+      const r = await fetch(CONFIG.endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(data)
+      });
+      if (!r.ok) throw new Error("bad response");
+    } else if (CONFIG.fallbackEmail) {
+      const body = Object.entries(data).map(([k,v]) => k + ": " + v).join("\n");
+      window.location.href = "mailto:" + CONFIG.fallbackEmail +
+        "?subject=" + encodeURIComponent(CONFIG.sessionName + " feedback") +
+        "&body=" + encodeURIComponent(body);
+    } else {
+      throw new Error("not configured");
+    }
+    form.style.display = "none";
+    document.getElementById("thanks").style.display = "block";
+    window.scrollTo({top:0,behavior:"smooth"});
+  } catch (x) {
+    showErr(CONFIG.endpoint || CONFIG.fallbackEmail
+      ? "Something went wrong. Please try again in a moment."
+      : "This form is not connected yet. Set an endpoint or email in the CONFIG block.");
+    btn.disabled = false; btn.textContent = "Send feedback";
+  }
+});
+</script>
+</body>
+</html>
